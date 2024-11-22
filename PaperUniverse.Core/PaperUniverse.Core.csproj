@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <Folder Include="Contexts\AccountContext\Entities\" />
+      <Folder Include="Contexts\AccountContext\ValueObjects\" />
+      <Folder Include="Contexts\SharedContext\Entities\" />
+      <Folder Include="Contexts\SharedContext\ValueObjects\" />
+    </ItemGroup>
+
+</Project>
