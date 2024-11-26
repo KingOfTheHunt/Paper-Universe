@@ -5,7 +5,7 @@ namespace PaperUniverse.Core.Contexts.AccountContext.ValueObjects;
 public class Verification : ValueObject
 {
     public string Code { get; private set; } = Guid.NewGuid().ToString("N")[..6];
-    public DateTime? ExpiresAt { get; set; } = DateTime.Now.AddMinutes(30);
+    public DateTime? ExpiresAt { get; private set; } = DateTime.Now.AddMinutes(30);
     public DateTime? VerifiedAt { get; private set; } = null;
     public bool Active => ExpiresAt == null && VerifiedAt != null;
 
