@@ -17,7 +17,8 @@ public class Password : ValueObject
             .IsGreaterThan(password.Length, 8, "Password", "A senha precisa no mínimo 8 " +
                                                            "caracteres."));
         
-        Hash = PasswordHasher.Hash(password, privateKey: Configuration.PrivateKey);
+        if (IsValid)
+            Hash = PasswordHasher.Hash(password, privateKey: Configuration.PrivateKey);
     }
 
     public bool Challenge(string plainTextPassword) => 
