@@ -8,9 +8,11 @@
 
     <ItemGroup>
       <Folder Include="Contexts\AccountContext\Entities\" />
-      <Folder Include="Contexts\AccountContext\ValueObjects\" />
-      <Folder Include="Contexts\SharedContext\Entities\" />
-      <Folder Include="Contexts\SharedContext\ValueObjects\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Flunt" Version="2.0.5" />
+      <PackageReference Include="SecureIdentity" Version="1.0.4" />
     </ItemGroup>
 
 </Project>
