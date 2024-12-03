@@ -14,7 +14,7 @@ public class Password : ValueObject
         AddNotifications(new Contract<Password>()
             .Requires()
             .IsNotNullOrEmpty(password, "Password", "A senha precisa ser informada.")
-            .IsGreaterThan(password.Length, 8, "Password", "A senha precisa no mínimo 8 " +
+            .IsGreaterOrEqualsThan(password.Length, 8, "Password", "A senha precisa no mínimo 8 " +
                                                            "caracteres."));
         
         if (IsValid)

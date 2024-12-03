@@ -8,7 +8,7 @@ public class Email : ValueObject
     public string Address { get; private set; }
     public Verification Verification { get; private set; } = new();
 
-    public Email(string address, string password)
+    public Email(string address)
     {
         Address = address;
         
