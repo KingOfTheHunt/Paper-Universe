@@ -8,6 +8,10 @@ public class Email : ValueObject
     public string Address { get; private set; }
     public Verification Verification { get; private set; } = new();
 
+    protected Email()
+    {
+    }
+    
     public Email(string address)
     {
         Address = address;

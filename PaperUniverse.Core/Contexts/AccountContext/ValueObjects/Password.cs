@@ -9,6 +9,10 @@ public class Password : ValueObject
     public string Hash { get; private set; }
     public string ResetCode { get; set; } = Guid.NewGuid().ToString("N")[..6];
 
+    protected Password()
+    {
+    }
+    
     public Password(string password)
     {
         AddNotifications(new Contract<Password>()

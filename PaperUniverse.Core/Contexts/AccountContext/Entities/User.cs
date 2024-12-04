@@ -10,6 +10,10 @@ public class User : Entity
     public Email Email { get; private set; }
     public Password Password { get; private set; }
 
+    protected User()
+    {
+    }
+    
     public User(Name name, Email email, Password password)
     {
         Name = name;
