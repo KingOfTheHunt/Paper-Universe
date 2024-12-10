@@ -22,4 +22,9 @@ public class Name : ValueObject
             .IsNotNullOrEmpty(FirstName, "FirstName", "O primeiro nome precisa ser informado.")
             .IsNotNullOrEmpty(LastName, "LastName", "O último nome precisa ser informado."));
     }
+
+    public override string ToString()
+    {
+        return $"{FirstName} {LastName}";
+    }
 }

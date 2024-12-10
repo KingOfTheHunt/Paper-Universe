@@ -8,6 +8,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.AddConfiguration();
 builder.AddDatabase();
+builder.AddAccountContext();
+builder.AddMediatR();
 
 var app = builder.Build();
 
@@ -18,6 +20,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapGet("/", () => "I'm ready to work");
+app.MapAccountContextEndpoints();
+
+app.MapGet("/", () => "I'm ready to work")
+    .WithDescription("Endpoint para verificar se a API está funcionando.");
 
 app.Run();
