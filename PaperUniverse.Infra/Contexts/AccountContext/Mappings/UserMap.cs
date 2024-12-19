@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using PaperUniverse.Core.Contexts.AccountContext.Entities;
 
-namespace PaperUniverse.Infra.Context.AccountContext.Mappings;
+namespace PaperUniverse.Infra.Contexts.AccountContext.Mappings;
 
 public class UserMap : IEntityTypeConfiguration<User>
 {

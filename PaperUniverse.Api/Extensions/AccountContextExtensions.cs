@@ -9,10 +9,17 @@ public static class AccountContextExtensions
         #region Create
 
         builder.Services.AddTransient<Core.Contexts.AccountContext.UseCases.Create.Contracts.IRepository,
-            Infra.Context.AccountContext.UseCases.Create.Repository>();
+            Infra.Contexts.AccountContext.UseCases.Create.Repository>();
         builder.Services.AddTransient<Core.Contexts.AccountContext.UseCases.Create.Contracts.IService,
-            Infra.Context.AccountContext.UseCases.Create.Service>();
+            Infra.Contexts.AccountContext.UseCases.Create.Service>();
 
+        #endregion
+
+        #region Validation
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.Validate.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.Validate.Repository
+        >();
         #endregion
     }
 
@@ -38,6 +45,32 @@ public static class AccountContextExtensions
                 typeof(Core.Contexts.AccountContext.UseCases.Create.Response))
             .Produces(StatusCodes.Status400BadRequest)
             .Produces(StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region Validation
+
+        app.MapPost("v1/users/validation", async (
+                Core.Contexts.AccountContext.UseCases.Validate.Request req,
+                IRequestHandler<
+                    Core.Contexts.AccountContext.UseCases.Validate.Request,
+                    Core.Contexts.AccountContext.UseCases.Validate.Response> handler) =>
+            {
+                var result = await handler.Handle(req, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.BadRequest(result);
+            })
+            .WithTags("Users")
+            .WithDescription("Ativa a conta do usuário.")
+            .Produces(StatusCodes.Status200OK,
+                typeof(Core.Contexts.AccountContext.UseCases.Validate.Response))
+            .Produces(StatusCodes.Status404NotFound,
+                typeof(Core.Contexts.AccountContext.UseCases.Validate.Response))
+            .Produces(StatusCodes.Status400BadRequest,
+                typeof(Core.Contexts.AccountContext.UseCases.Validate.Response));
 
         #endregion
     }
