@@ -1,6 +1,6 @@
 using Flunt.Notifications;
 
-namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation;
+namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate;
 
 public class Response : SharedContext.UseCases.Response
 {

@@ -1,7 +1,7 @@
 using Flunt.Notifications;
 using Flunt.Validations;
 
-namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation;
+namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate;
 
 public static class Specification
 {

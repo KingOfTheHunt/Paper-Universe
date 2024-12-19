@@ -1,8 +1,8 @@
-using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation;
-using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation.Contracts;
-using PaperUniverse.Tests.Contexts.AccountContext.UseCases.Validation.Mocks;
+using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate;
+using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate.Contracts;
+using PaperUniverse.Tests.Contexts.AccountContext.UseCases.Validate.Mocks;
 
-namespace PaperUniverse.Tests.Contexts.AccountContext.UseCases.Validation;
+namespace PaperUniverse.Tests.Contexts.AccountContext.UseCases.Validate;
 
 [TestClass]
 public class HandlerTests

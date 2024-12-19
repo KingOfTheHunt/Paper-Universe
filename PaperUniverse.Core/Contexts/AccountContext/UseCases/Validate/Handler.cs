@@ -1,8 +1,8 @@
 using MediatR;
 using PaperUniverse.Core.Contexts.AccountContext.Entities;
-using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation.Contracts;
+using PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate.Contracts;
 
-namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation;
+namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate;
 
 public class Handler : IRequestHandler<Request, Response>
 {
@@ -25,7 +25,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            user = await _repository.GetUserByEmailAsync(request.Email);
+            user = await _repository.GetUserByEmailAsync(request.Email, cancellationToken);
 
             if (user is null)
                 return new Response("Não foi encontrado nenhum usuário com esse e-mail.", 404);
@@ -43,7 +43,7 @@ public class Handler : IRequestHandler<Request, Response>
 
         try
         {
-            await _repository.SaveAsync(user);
+            await _repository.SaveAsync(user, cancellationToken);
         }
         catch (Exception)
         {

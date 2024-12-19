@@ -3,7 +3,7 @@ using PaperUniverse.Core.Contexts.AccountContext.Entities;
 using PaperUniverse.Core.Contexts.AccountContext.UseCases.Create.Contracts;
 using PaperUniverse.Infra.Context.Helper;
 
-namespace PaperUniverse.Infra.Context.AccountContext.UseCases.Create;
+namespace PaperUniverse.Infra.Contexts.AccountContext.UseCases.Create;
 
 public class Service : IService
 {

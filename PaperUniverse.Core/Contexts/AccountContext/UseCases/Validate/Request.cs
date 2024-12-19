@@ -1,6 +1,6 @@
 using MediatR;
 
-namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validation;
+namespace PaperUniverse.Core.Contexts.AccountContext.UseCases.Validate;
 
 public class Request : IRequest<Response>
 {
