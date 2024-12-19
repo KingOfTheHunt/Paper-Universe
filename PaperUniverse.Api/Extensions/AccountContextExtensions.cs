@@ -50,7 +50,7 @@ public static class AccountContextExtensions
 
         #region Validation
 
-        app.MapPost("v1/users/validation", async (
+        app.MapPost("v1/users/validate", async (
                 Core.Contexts.AccountContext.UseCases.Validate.Request req,
                 IRequestHandler<
                     Core.Contexts.AccountContext.UseCases.Validate.Request,
