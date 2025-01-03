@@ -13,6 +13,7 @@ builder.AddConfiguration();
 builder.AddDatabase();
 builder.AddAccountContext();
 builder.AddMediatR();
+builder.AddJwtAuthentication();
 
 var app = builder.Build();
 
@@ -24,6 +25,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapAccountContextEndpoints();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapGet("/", () => "I'm ready to work")
     .WithDescription("Endpoint para verificar se a API está funcionando.");

@@ -1,4 +1,7 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PaperUniverse.Core.Contexts;
 using PaperUniverse.Infra.Data;
 
@@ -18,6 +21,7 @@ public static class BuilderExtensions
             ?? string.Empty;
         Configuration.Smtp.Password = builder.Configuration.GetSection("SMTP").GetValue<string>("Password")
             ?? string.Empty;
+        Configuration.JwtKey = builder.Configuration.GetValue<string>("JwtKey") ?? string.Empty;
     }
 
     public static void AddDatabase(this WebApplicationBuilder builder)
@@ -33,5 +37,27 @@ public static class BuilderExtensions
     {
         builder.Services.AddMediatR(x =>
             x.RegisterServicesFromAssembly(typeof(Configuration).Assembly));
+    }
+
+    public static void AddJwtAuthentication(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddAuthentication(options => 
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.JwtKey)),
+                    ValidateIssuer = false,
+                    ValidateAudience = false
+                };
+            });
+
+        builder.Services.AddAuthorization();
     }
 }
