@@ -20,4 +20,9 @@ public class Email : ValueObject
             .Requires()
             .IsEmail(Address, "Address", "E-mail informado é inválido."));
     }
+
+    public void GenerateNewVerificationCode()
+    {
+        Verification = new Verification();
+    }
 }

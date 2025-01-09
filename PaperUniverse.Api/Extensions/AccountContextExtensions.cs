@@ -30,6 +30,20 @@ public static class AccountContextExtensions
         >();
         
         #endregion
+
+        #region Resend Verification
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.ResendVerification.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.ResendVerification.Repository
+        >();
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.ResendVerification.Contracts.IService,
+            Infra.Contexts.AccountContext.UseCases.ResendVerification.Service
+        >();
+
+        #endregion
     }
 
     public static void MapAccountContextEndpoints(this WebApplication app)
@@ -112,6 +126,33 @@ public static class AccountContextExtensions
                 typeof(Core.Contexts.AccountContext.UseCases.Authenticate.Response))
             .Produces(StatusCodes.Status500InternalServerError, 
                 typeof(Core.Contexts.AccountContext.UseCases.Authenticate.Response));
+
+        #endregion
+
+        #region Resend Verification
+
+        app.MapPost("v1/users/resend-verification", async (
+                Core.Contexts.AccountContext.UseCases.ResendVerification.Request request,
+                IRequestHandler<Core.Contexts.AccountContext.UseCases.ResendVerification.Request,
+                    Core.Contexts.AccountContext.UseCases.ResendVerification.Response> handler) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.Json(result, statusCode: result.Status);
+            })
+            .WithTags("Users")
+            .WithDescription("Gera um novo código de verificação e o envia para o e-mail do usuário.")
+            .Produces(StatusCodes.Status200OK,
+                typeof(Core.Contexts.AccountContext.UseCases.ResendVerification.Response))
+            .Produces<Core.Contexts.AccountContext.UseCases.ResendVerification.Response>(
+                StatusCodes.Status400BadRequest)
+            .Produces<Core.Contexts.AccountContext.UseCases.ResendVerification.Response>(
+                StatusCodes.Status404NotFound)
+            .Produces<Core.Contexts.AccountContext.UseCases.ResendVerification.Response>(
+                StatusCodes.Status500InternalServerError);
 
         #endregion
     }
