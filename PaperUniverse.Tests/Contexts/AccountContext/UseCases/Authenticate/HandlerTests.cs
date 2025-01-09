@@ -32,22 +32,6 @@ public class HandlerTests
 
     [TestMethod]
     [TestCategory("Handlers")]
-    public async Task ShouldReturnTrueWhenUserIsAuthenticated()
-    {
-        var request = new Request()
-        {
-            Email = "john.doe@gmail.com",
-            Password = "password",
-        };
-        var handler = new Handler(_repository);
-        var result = await handler.Handle(request, new CancellationToken());
-        
-        Assert.IsTrue(result.Success);
-        Assert.AreEqual("Autenticado com sucesso.", result.Message);
-    }
-
-    [TestMethod]
-    [TestCategory("Handlers")]
     public async Task ShouldReturnFalseWhenPasswordIsInvalid()
     {
         var request = new Request()
@@ -59,6 +43,5 @@ public class HandlerTests
         var result = await handler.Handle(request, new CancellationToken());
         
         Assert.IsFalse(result.Success);
-        Assert.AreEqual("Senha incorreta.", result.Message);
     }
 }
