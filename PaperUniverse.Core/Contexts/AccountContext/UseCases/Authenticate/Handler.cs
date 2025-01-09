@@ -35,7 +35,7 @@ public class Handler : IRequestHandler<Request, Response>
         }
 
         if (user.Email.Verification.Active == false)
-            return new Response("A conta não foi ativada.", 400);
+            return new Response("A conta não foi ativada.", 401);
         
         if (user.Password.Challenge(request.Password) == false)
             return new Response("Senha incorreta.", 401);

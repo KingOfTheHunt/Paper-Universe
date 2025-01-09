@@ -44,6 +44,15 @@ public static class AccountContextExtensions
         >();
 
         #endregion
+
+        #region Details
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.Details.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.Details.Repository
+        >();
+
+        #endregion
     }
 
     public static void MapAccountContextEndpoints(this WebApplication app)
@@ -152,6 +161,45 @@ public static class AccountContextExtensions
             .Produces<Core.Contexts.AccountContext.UseCases.ResendVerification.Response>(
                 StatusCodes.Status404NotFound)
             .Produces<Core.Contexts.AccountContext.UseCases.ResendVerification.Response>(
+                StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region Details
+
+        app.MapPost("v1/users/details", async (
+                HttpContext httpContext,
+                Core.Contexts.AccountContext.UseCases.Details.Request request,
+                IRequestHandler<Core.Contexts.AccountContext.UseCases.Details.Request,
+                    Core.Contexts.AccountContext.UseCases.Details.Response> handler) =>
+            {
+                if (httpContext.User.Identity?.IsAuthenticated == false)
+                    return Results.Json(
+                        new Core.Contexts.AccountContext.UseCases
+                            .Details.Response("Usuário não autenticado!", 401), 
+                            statusCode: StatusCodes.Status401Unauthorized);
+
+                if (httpContext.User.Identity?.Name != request.Email)
+                    return Results.BadRequest();
+                        
+                var result = await handler.Handle(request, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.Json(result, statusCode: result.Status);
+            }).RequireAuthorization()
+            .WithTags("Users")
+            .WithDescription("Retorna os dados do usuário autenticado.")
+            .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
+                StatusCodes.Status200OK)
+            .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
+                StatusCodes.Status400BadRequest)
+            .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
+                StatusCodes.Status401Unauthorized)
+            .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
+                StatusCodes.Status404NotFound)
+            .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
                 StatusCodes.Status500InternalServerError);
 
         #endregion
