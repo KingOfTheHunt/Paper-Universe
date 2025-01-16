@@ -53,6 +53,15 @@ public static class AccountContextExtensions
         >();
 
         #endregion
+        
+        #region Update Password
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.UpdatePassword.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.UpdatePassword.Repository
+        >();
+
+        #endregion
     }
 
     public static void MapAccountContextEndpoints(this WebApplication app)
@@ -201,6 +210,38 @@ public static class AccountContextExtensions
                 StatusCodes.Status404NotFound)
             .Produces<Core.Contexts.AccountContext.UseCases.Details.Response>(
                 StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region Update Password
+
+        app.MapPost("v1/users/update-password", async (HttpContext httpContext,
+                Core.Contexts.AccountContext.UseCases.UpdatePassword.Request request,
+                IRequestHandler<Core.Contexts.AccountContext.UseCases.UpdatePassword.Request,
+                    Core.Contexts.AccountContext.UseCases.UpdatePassword.Response> handler) =>
+            {
+                if (httpContext.User.Identity?.IsAuthenticated == false)
+                    return Results.Unauthorized();
+
+                request.Email = httpContext.User.Identity.Name;
+                var result = await handler.Handle(request, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.Json(result, statusCode: result.Status);
+            })
+            .RequireAuthorization()
+            .WithTags("Users")
+            .WithDescription("Atualiza a senha do usuário.")
+            .Produces<Core.Contexts.AccountContext.UseCases.UpdatePassword.Response>
+                (StatusCodes.Status200OK)
+            .Produces<Core.Contexts.AccountContext.UseCases.UpdatePassword.Response>
+                (StatusCodes.Status400BadRequest)
+            .Produces<Core.Contexts.AccountContext.UseCases.UpdatePassword.Response>
+                (StatusCodes.Status401Unauthorized)
+            .Produces<Core.Contexts.AccountContext.UseCases.UpdatePassword.Response>
+                (StatusCodes.Status500InternalServerError);
 
         #endregion
     }
