@@ -62,6 +62,20 @@ public static class AccountContextExtensions
         >();
 
         #endregion
+
+        #region Send Password Reset Code
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.SendPasswordResetCode.Repository
+        >();
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Contracts.IService,
+            Infra.Contexts.AccountContext.UseCases.SendPasswordResetCode.Service
+        >();
+
+        #endregion
     }
 
     public static void MapAccountContextEndpoints(this WebApplication app)
@@ -242,6 +256,34 @@ public static class AccountContextExtensions
                 (StatusCodes.Status401Unauthorized)
             .Produces<Core.Contexts.AccountContext.UseCases.UpdatePassword.Response>
                 (StatusCodes.Status500InternalServerError);
+
+        #endregion
+
+        #region Send Password Reset Code
+
+        app.MapPost("v1/users/send-password-reset-code", async (
+                Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Request request,
+                IRequestHandler<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Request,
+                    Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response> handler) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.Json(result, statusCode: result.Status);
+            })
+            .WithTags("Users")
+            .WithDescription("Envia o código para resetar a senha do usuário.")
+            .Produces<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response>
+                (StatusCodes.Status200OK)
+            .Produces<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response>
+                (StatusCodes.Status400BadRequest)
+            .Produces<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response>
+                (StatusCodes.Status404NotFound)
+            .Produces<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response>
+                (StatusCodes.Status500InternalServerError);
+
 
         #endregion
     }
