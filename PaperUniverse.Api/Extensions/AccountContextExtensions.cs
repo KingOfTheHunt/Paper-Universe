@@ -1,4 +1,5 @@
 using MediatR;
+using PaperUniverse.Core.Contexts.AccountContext.UseCases.Create;
 
 namespace PaperUniverse.Api.Extensions;
 
@@ -73,6 +74,15 @@ public static class AccountContextExtensions
         builder.Services.AddTransient<
             Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Contracts.IService,
             Infra.Contexts.AccountContext.UseCases.SendPasswordResetCode.Service
+        >();
+
+        #endregion
+
+        #region Reset Password
+
+        builder.Services.AddTransient<
+            Core.Contexts.AccountContext.UseCases.ResetPassword.Contracts.IRepository,
+            Infra.Contexts.AccountContext.UseCases.ResetPassword.Repository
         >();
 
         #endregion
@@ -229,7 +239,7 @@ public static class AccountContextExtensions
 
         #region Update Password
 
-        app.MapPost("v1/users/update-password", async (HttpContext httpContext,
+        app.MapPut("v1/users/update-password", async (HttpContext httpContext,
                 Core.Contexts.AccountContext.UseCases.UpdatePassword.Request request,
                 IRequestHandler<Core.Contexts.AccountContext.UseCases.UpdatePassword.Request,
                     Core.Contexts.AccountContext.UseCases.UpdatePassword.Response> handler) =>
@@ -284,6 +294,33 @@ public static class AccountContextExtensions
             .Produces<Core.Contexts.AccountContext.UseCases.SendPasswordResetCode.Response>
                 (StatusCodes.Status500InternalServerError);
 
+
+        #endregion
+
+        #region Reset Password
+
+        app.MapPut("v1/users/reset-password", async (
+                Core.Contexts.AccountContext.UseCases.ResetPassword.Request request,
+                IRequestHandler<Core.Contexts.AccountContext.UseCases.ResetPassword.Request,
+                    Core.Contexts.AccountContext.UseCases.ResetPassword.Response> handler) =>
+            {
+                var result = await handler.Handle(request, new CancellationToken());
+
+                if (result.Success)
+                    return Results.Ok(result);
+
+                return Results.Json(result, statusCode: result.Status);
+            })
+            .WithTags("Users")
+            .WithDescription("Redefine a senha do usuário.")
+            .Produces<Core.Contexts.AccountContext.UseCases.ResetPassword.Response>
+                (StatusCodes.Status200OK)
+            .Produces<Core.Contexts.AccountContext.UseCases.ResetPassword.Response>
+                (StatusCodes.Status400BadRequest)
+            .Produces<Core.Contexts.AccountContext.UseCases.ResetPassword.Response>
+                (StatusCodes.Status404NotFound)
+            .Produces<Core.Contexts.AccountContext.UseCases.ResetPassword.Response>
+                (StatusCodes.Status500InternalServerError);
 
         #endregion
     }
