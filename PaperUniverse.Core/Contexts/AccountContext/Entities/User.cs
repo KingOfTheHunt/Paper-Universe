@@ -48,4 +48,9 @@ public class User : Entity
         var password = new Password(newPassword);
         Password = password;
     }
+
+    public void ChangeName(string firstName, string lastName)
+    {
+        Name = new Name(firstName, lastName);
+    }
 }
