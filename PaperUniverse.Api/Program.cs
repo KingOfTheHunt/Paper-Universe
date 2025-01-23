@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.OpenApi.Models;
 using PaperUniverse.Api.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -5,10 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(x =>
-{
-    x.CustomSchemaIds(y => y.FullName);
-});
+builder.ConfigureSwagger();
 builder.AddConfiguration();
 builder.AddDatabase();
 builder.AddAccountContext();

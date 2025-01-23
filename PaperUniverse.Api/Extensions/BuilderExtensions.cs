@@ -2,6 +2,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using PaperUniverse.Core.Contexts;
 using PaperUniverse.Infra.Data;
 
@@ -15,12 +16,12 @@ public static class BuilderExtensions
             .GetConnectionString("Default") ?? string.Empty;
 
         Configuration.Smtp.Host = builder.Configuration.GetSection("SMTP").GetValue<string>("Host")
-            ?? string.Empty;
+                                  ?? string.Empty;
         Configuration.Smtp.Port = builder.Configuration.GetSection("SMTP").GetValue<int>("Port");
         Configuration.Smtp.Login = builder.Configuration.GetSection("SMTP").GetValue<string>("Login")
-            ?? string.Empty;
+                                   ?? string.Empty;
         Configuration.Smtp.Password = builder.Configuration.GetSection("SMTP").GetValue<string>("Password")
-            ?? string.Empty;
+                                      ?? string.Empty;
         Configuration.JwtKey = builder.Configuration.GetValue<string>("JwtKey") ?? string.Empty;
     }
 
@@ -28,7 +29,7 @@ public static class BuilderExtensions
     {
         builder.Services.AddDbContext<AppDbContext>(options =>
         {
-            options.UseSqlServer(Configuration.Database.ConnectionString, x => 
+            options.UseSqlServer(Configuration.Database.ConnectionString, x =>
                 x.MigrationsAssembly("PaperUniverse.Api"));
         });
     }
@@ -41,7 +42,7 @@ public static class BuilderExtensions
 
     public static void AddJwtAuthentication(this WebApplicationBuilder builder)
     {
-        builder.Services.AddAuthentication(options => 
+        builder.Services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -59,5 +60,35 @@ public static class BuilderExtensions
             });
 
         builder.Services.AddAuthorization();
+    }
+
+    public static void ConfigureSwagger(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSwaggerGen(x =>
+        {
+            x.CustomSchemaIds(y => y.FullName);
+            x.AddSecurityDefinition(JwtBearerDefaults.AuthenticationScheme, new OpenApiSecurityScheme
+            {
+                In = ParameterLocation.Header,
+                Description = "Informe o token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                Scheme = JwtBearerDefaults.AuthenticationScheme
+            });
+            x.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference()
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = JwtBearerDefaults.AuthenticationScheme
+                        }
+                    },
+                    []
+                }
+            });
+        });
     }
 }
